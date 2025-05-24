@@ -26,10 +26,13 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 });
 
 // Middleware #3
-app.Use(async (HttpContext context, RequestDelegate next) =>
+app.Use(async (context, next) =>
 {
     await context.Response.WriteAsync("Middleware #3: Before calling next\n");
+
     await next(context);
+    //remving HttpContext and RequestDelegate make required using next(context)
+
     await context.Response.WriteAsync("Middleware #3: After calling next\n");
 });
 app.Run();
