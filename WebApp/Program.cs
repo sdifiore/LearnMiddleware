@@ -17,7 +17,11 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 app.Use(async (HttpContext context, RequestDelegate next) =>
 {
     await context.Response.WriteAsync("Middleware #2: Before calling next\n");
-    await next(context);
+
+    //await next(context);
+    // Calling next is optional, if not called, the request will not proceed to the next middleware
+    // Thus this is a terminal midleware
+
     await context.Response.WriteAsync("Middleware #2: After calling next\n");
 });
 
