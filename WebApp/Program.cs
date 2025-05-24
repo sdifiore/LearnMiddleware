@@ -11,11 +11,36 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
     await context.Response.WriteAsync("Middleware #1: After calling next\n");
 });
 
+// Can be diverted by calling: http://localhost:5248/employees or http://localhost:5248/employees/xyz
+app.Map("/employees", (ApplBuilder) => // create a new branch diverting original flow
+{
+    ApplBuilder.Use(async (HttpContext context, RequestDelegate next) =>
+    {
+        await context.Response.WriteAsync("Middleware #5: Before calling next\n");
+
+        await next(context);
+
+        await context.Response.WriteAsync("Middleware #5: After calling next\n");
+    });
+});
+
+app.Use(async (HttpContext context, RequestDelegate next) =>
+{
+    await context.Response.WriteAsync("Middleware #6: Before calling next\n");
+
+    await next(context);
+
+    await context.Response.WriteAsync("Middleware #6: After calling next\n");
+});
+
 // Middleware #2
-app.Run(async (context) =>
-//app.Run will always create a terminal middleware
+app.Use(async (context, next) =>
 {
     await context.Response.WriteAsync("Middleware #2: Before calling next\n");
+
+    await next(context);
+
+    await context.Response.WriteAsync("Middleware #2: After calling next\n");
 });
 
 // Middleware #3
